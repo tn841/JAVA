@@ -38,7 +38,9 @@ public class WebClientMain {
 		}
 		
 		socket.close();
-		
+		/*
+		 * 다른 workspace에서 commit 테스트
+		 */
 	}
 
 }
