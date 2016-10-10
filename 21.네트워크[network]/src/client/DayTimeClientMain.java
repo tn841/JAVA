@@ -15,7 +15,7 @@ public class DayTimeClientMain {
 		/*
 		 * 1. 家南 积己
 		 */
-		Socket socket = new Socket("192.168.12.31", 8000);
+		Socket socket = new Socket("192.168.12.12", 8000);
 		System.out.println("socket积己 : "+socket);
 		System.out.println("郴IP:"+socket.getLocalAddress());
 		/*
