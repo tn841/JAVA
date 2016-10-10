@@ -20,8 +20,9 @@ public class ChatServerThread extends Thread{
 	private PrintWriter out;
 	private ChatServerFrame csf;
 	
-	public ChatServerThread(ChatServerFrame chatServerFrame){
-		csf = chatServerFrame;
+	public ChatServerThread(ChatServerFrame asdfasdf){
+		csf = asdfasdf;
+		
 	}
 	
 	@Override
