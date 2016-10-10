@@ -23,11 +23,13 @@ public class ServerSocketMain {
 		 *     
 		 *   - 클라이언트의 소켓연결요청신호를 받아서 소켓을 생성한후 소켓 반환
 		 */
-		System.out.println("[Server] 0. 3333번 포트를 열고, 해당 포트로 들어오는 클라이언트의 소켓연결요청을 대기(주 쓰레드가..)");
-		Socket socket = serverSocket.accept();
-		
-		System.out.println("[Server] 1. 3333번 포트로 들어온 클라이언트의 소켓연결요청을 처리한 후 소켓 반환");
-		System.out.println("[Server] 2. 클라이언트와 연결된 서버의 소켓 확인: "+socket);
+		while(true){
+			System.out.println("[Server] 0. 3333번 포트를 열고, 해당 포트로 들어오는 클라이언트의 소켓연결요청을 대기(주 쓰레드가..)");
+			Socket socket = serverSocket.accept();
+			
+			System.out.println("[Server] 1. 3333번 포트로 들어온 클라이언트의 소켓연결요청을 처리한 후 소켓 반환");
+			System.out.println("[Server] 2. 클라이언트와 연결된 서버의 소켓 확인: "+socket);
+		}
 		
 
 	}
