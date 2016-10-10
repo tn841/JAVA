@@ -18,16 +18,22 @@ public class ChatServerThread extends Thread{
 	private Socket socket;
 	private BufferedReader in;
 	private PrintWriter out;
+	private ChatServerFrame csf;
+	
+	public ChatServerThread(ChatServerFrame chatServerFrame){
+		csf = chatServerFrame;
+	}
+	
 	@Override
 	public void run() {
 		try {
+			//서버 소켓 생성
 			this.serverSocket=new ServerSocket(7777);
 			while(true){
 				System.out.println("0.7777번포트에서 클라이언트 소켓접속요청대기");
 				this.socket=serverSocket.accept();
 				System.out.println("1.클라이언트 소켓생성:"+socket);
-				System.out.println("2.클라이언트 InputStream생성");
-				
+				System.out.println("2.클라이언트 InputStream, OutputStream생성");		
 				this.in=new BufferedReader(
 						new InputStreamReader(
 							socket.getInputStream()));
@@ -35,17 +41,25 @@ public class ChatServerThread extends Thread{
 				this.out=new PrintWriter(
 								new OutputStreamWriter(
 										socket.getOutputStream()));
-				System.out.println("3.클라이언트 OutputStream생성");
+				
 				
 				while(true){
-					System.out.println("4.클라이언트 로부터 데이타를 읽기위해무한대기");
+					System.out.println("4.클라이언트 로부터 데이타를 읽기위해무한대기, blocking");
 					String readLine = in.readLine();
 					System.out.println("5.클라이언트 로부터 데이타를 읽기:"+readLine);
+					
+					//받은데이터 UI에 출력
+					csf.getChatTA().append("상대방 : "+readLine+"\n");
 				}
 			
 			}
 		} catch (IOException e) {
 			System.out.println("Sever down!!!:"+e.getMessage());
 		}
+	}
+
+	public void send(String string) {
+		out.println(string);
+		out.flush();
 	}
 }
