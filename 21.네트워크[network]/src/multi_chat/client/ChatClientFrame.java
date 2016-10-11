@@ -2,24 +2,28 @@ package multi_chat.client;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
+import java.util.StringTokenizer;
 
+import javax.swing.AbstractListModel;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.awt.event.ActionEvent;
+import javax.swing.border.EmptyBorder;
+
+import multi_chat.common.ChatProtocol;
 
 public class ChatClientFrame extends JFrame {
 
@@ -28,6 +32,11 @@ public class ChatClientFrame extends JFrame {
 	private JTextField chatTF;
 	private ClientSocket cct;
 	private JScrollPane scrollPane;
+	private JList clientList;
+	private Object seletedList;
+	private JPanel panel;
+	private JButton popupBtn;
+
 
 	/**
 	 * Launch the application.
@@ -51,44 +60,90 @@ public class ChatClientFrame extends JFrame {
 	public ChatClientFrame() {
 		setTitle("\uCC44\uD305\uD074\uB77C\uC774\uC5B8\uD2B8");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 331, 464);
+		setBounds(100, 100, 527, 467);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		
-		scrollPane = new JScrollPane();
-		contentPane.add(scrollPane, BorderLayout.CENTER);
-		
-		chatTA = new JTextArea();
-		chatTA.setEditable(false);
-		scrollPane.setViewportView(chatTA);
-		
-		chatTF = new JTextField();
-		chatTF.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String data = chatTF.getText();
-				chatTF.setText("");
-				if(data.trim().equals("")){
-					JOptionPane.showMessageDialog(null, "내용을 입력하세요.");
-				}
+				contentPane.setLayout(null);
 				
-				//chatTA.append("나 : "+data+"\n");
+				popupBtn = new JButton("\uADD3\uC18D\uB9D0");
+				popupBtn.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						JList temp = (JList)seletedList;
+						
+						
+					}
+				});
+				popupBtn.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseExited(MouseEvent e) {
+						popupBtn.setVisible(false);
+					}
+				});
+				popupBtn.setBounds(0, 0, 89, 34);
+				popupBtn.setVisible(false);
+				contentPane.add(popupBtn);
 				
-				try {
-					cct.send(data);
-				} catch (Exception e1) {
-					throw new RuntimeException(e1.getMessage());
-					//생략된 RuntimeException을 상속받아 예외를 던진다.
-				}
-			
-			}
-		});
-		contentPane.add(chatTF, BorderLayout.SOUTH);
-		chatTF.setColumns(10);
+				panel = new JPanel();
+				panel.setBounds(0, 0, 509, 419);
+				contentPane.add(panel);
+				panel.setLayout(new BorderLayout(0, 0));
+				
+				scrollPane = new JScrollPane();
+				panel.add(scrollPane, BorderLayout.CENTER);
+				
+				chatTA = new JTextArea();
+				chatTA.setEditable(false);
+				scrollPane.setViewportView(chatTA);
+				
+				clientList = new JList();
+				panel.add(clientList, BorderLayout.WEST);
+				clientList.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						
+						if(e.getButton() == 3){
+		
+							System.out.println("클릭!");
+							popupBtn.setBounds(e.getX(), e.getY(), 100, 30);
+							popupBtn.setVisible(true);
+							System.out.println(e.getSource());
+							seletedList = e.getSource();
+							JList temp = (JList)seletedList;
+							System.out.println(temp.getName());
+						}
+					}
+					
+				});
+				clientList.setFont(new Font("돋움", Font.PLAIN, 14));
+				
+				chatTF = new JTextField();
+				panel.add(chatTF, BorderLayout.SOUTH);
+				chatTF.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						String data = chatTF.getText();
+						chatTF.setText("");
+						if(data.trim().equals("")){
+							JOptionPane.showMessageDialog(null, "내용을 입력하세요.");
+						}
+						
+						//chatTA.append("나 : "+data+"\n");
+						
+						try {
+							cct.send(ChatProtocol.PLAIN_MESSAGE+"|"+data);
+						} catch (Exception e1) {
+							throw new RuntimeException(e1.getMessage());
+							//생략된 RuntimeException을 상속받아 예외를 던진다.
+						}
+					
+					}
+				});
+				chatTF.setColumns(10);
+				chatTF.requestFocus();
+				
+				
 		
 		setVisible(true);
-		chatTF.requestFocus();
 		
 		cct = new ClientSocket();
 		cct.start();
@@ -106,11 +161,7 @@ public class ChatClientFrame extends JFrame {
 		private DataInputStream in;	//소켓으로부터 데이터를 읽을 스트림
 		private DataOutputStream out;	//소켓에 데이터를 쓸 스트림
 		private String id;
-		
-		public ClientSocket(){
-						
-		}
-		
+
 		@Override
 		public void run() {
 			try {
@@ -123,10 +174,44 @@ public class ChatClientFrame extends JFrame {
 				
 				while(true){
 					//서버로 부터 데이터 읽기(올때까지 대기, blocking 된다.)
-					String readStr = in.readUTF();
+					String readData = in.readUTF();
+
+					StringTokenizer st = new StringTokenizer(readData, "|");
+					String protocol = st.nextToken();
+					String data = st.nextToken();
+					/*
+					 * 0|안녕
+					 * 1|id1#id2#id3
+					 * 2|id#안녕
+					 */
+					switch (protocol) {
+					case "0":
+						chatTA.append("- "+data+"\n");
+						break;
+					case "1":
+						System.out.println(data);
+						String[] dataArr = data.split("#");
+						for (int i = 0; i < dataArr.length; i++) {
+							clientList.setModel(new AbstractListModel() {
+								String[] values = dataArr;
+								public int getSize() {
+									return values.length;
+								}
+								public Object getElementAt(int index) {
+									return values[index];
+								}
+							});
+						}
+						break;
+					case "2":
+						//scsManger.sendWhisper();
+						break;
+
+					default:
+						break;
+					}
 					
-					//서버에 데이터 쓰기 -> UI에서 처리
-					chatTA.append("- "+readStr+"\n");
+					
 					scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
 				}	
 			} catch (Exception e) {
@@ -140,9 +225,4 @@ public class ChatClientFrame extends JFrame {
 		}
 		
 	}
-
-	/**************************************************/
-
-
-
 }

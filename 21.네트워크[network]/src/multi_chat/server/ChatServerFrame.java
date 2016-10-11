@@ -8,12 +8,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.StringTokenizer;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
+
+import multi_chat.common.ChatProtocol;
+
 import java.awt.BorderLayout;
 
 public class ChatServerFrame extends JFrame {
@@ -128,8 +132,32 @@ public class ChatServerFrame extends JFrame {
 					 */
 					setLog("<Server> "+id+"로 부터 데이터를 읽기위해 대기... Blocking...");
 					String readData = in.readUTF();
-					scsManger.sendBrodcasting(readData);	//매니저를 이용해 모든 클라이언트에게 전송
-					setLog("<Server> "+id+"로 부터 읽은 데이터 : "+readData);
+					
+					
+					StringTokenizer st = new StringTokenizer(readData, "|");
+					String protocol = st.nextToken();
+					String data = st.nextToken();
+					/*
+					 * 0|안녕
+					 * 1|id1#id2#id3
+					 * 2|id#안녕
+					 */
+					switch (protocol) {
+					case "0":
+						scsManger.sendBrodcasting(ChatProtocol.PLAIN_MESSAGE+"|"+data);	//매니저를 이용해 모든 클라이언트에게 전송
+						setLog("<Server> "+id+"로 부터 읽은 데이터 : "+data);
+						break;
+					case "1":
+						//scsManger.sendList();
+						break;
+					case "2":
+						//scsManger.sendWhisper();
+						break;
+
+					default:
+						break;
+					}
+					
 				}
 			}catch(Exception e){
 				setEmptyLine();
@@ -170,7 +198,12 @@ public class ChatServerFrame extends JFrame {
 		 */
 		public void addClientSocket(Server_ClientSocket clientSocket) throws Exception{
 			clientSocketList.add(clientSocket);
-			scsManger.sendBrodcasting(clientSocket.id+"님 입장");
+			//모든 클라이언트에 메시지 전송			
+			scsManger.sendBrodcasting(ChatProtocol.PLAIN_MESSAGE+"|"+clientSocket.id+"님 입장");
+			
+			//모든 클라이언트에 접속자 리스트 전송
+			scsManger.sendClientList();
+			
 			setEmptyLine();
 			setLog("<Server Manager> "+clientSocket.id+"에서 새로 들어왔습니다. 접속자 수 :"+clientSocketList.size());
 		}
@@ -181,8 +214,11 @@ public class ChatServerFrame extends JFrame {
 		 */
 		public void removeClientSocket(Server_ClientSocket clientSocket) throws Exception {
 			clientSocketList.remove(clientSocket);
-			scsManger.sendBrodcasting(clientSocket.id+"님 퇴장");
+			scsManger.sendBrodcasting(ChatProtocol.PLAIN_MESSAGE+"|"+clientSocket.id+"님 퇴장");
 			setLog("<Server Manager> 현재 접속자 수 :"+clientSocketList.size());
+			
+			//모든 클라이언트에 접속자 리스트 전송
+			scsManger.sendClientList();
 		}
 		
 		/*
@@ -196,8 +232,24 @@ public class ChatServerFrame extends JFrame {
 		
 		
 		/*
-		 * 
+		 * 연결된 모든 클라이언트에게 접속자 리스트 ㅓㄴ송
 		 */
+		public void sendClientList() throws Exception{
+			//1|id1#id2#id3
+			
+			String clientList = "";
+			for (int i = 0; i < clientSocketList.size(); i++) {
+				Server_ClientSocket scs = clientSocketList.get(i);
+				
+				clientList = clientList+scs.id;
+				if(i != clientSocketList.size()-1){
+					clientList = clientList+"#";
+				}
+
+			}
+			clientList = "1|"+clientList;
+			sendBrodcasting(clientList);
+		}
 		
 	}//Server_ClientSocketMananger
 	/************************ Server_ClientSocketMananger *********************/
