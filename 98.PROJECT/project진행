@@ -1,0 +1,25 @@
+1.project 이름
+
+2.package 명
+	com.itwill.bookcafe.member.dto
+	com.itwill.bookcafe.member.dao
+	com.itwill.bookcafe.member.service
+3.클래스설계(작성)
+  - 파일정의서를 기준으로 VO(DTO)클래스 작성
+    	Member.java
+    	Product.java
+    	Order.java
+  - DAO
+        MemberDao.java
+        ProductDao.java
+        OrderDao.java
+  - Service
+  		MemberService.java
+  		ProductService.java
+  		OrderService.java
+  - Dao,Service객체Test 		
+
+
+
+
+  		
