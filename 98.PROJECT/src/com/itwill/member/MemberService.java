@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class MemberService {
 	private MemberDao membeDao;
 	public MemberService() throws Exception{
-		membeDao=new MemberDao();
+		membeDao=new MemberDaoNetwork();
 	}
 	/*
 	 * 1.회원가입
