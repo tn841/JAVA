@@ -122,8 +122,7 @@ public class LoginDialog extends JDialog {
 								/*
 								 * 로그인 성공하면 새로운 쓰레드를 생성하여 무한히 반복하며 나에게온 msg확인
 								 */
-								mbThread = new MsgBoxThread(firstFrame);
-								mbThread.start();
+							
 								
 								dispose();
 							}else{

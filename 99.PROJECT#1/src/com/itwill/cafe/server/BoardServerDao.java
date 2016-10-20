@@ -13,7 +13,6 @@ public class BoardServerDao {
 	int boardNo = 0;
 
 	public BoardServerDao() throws Exception {
-		System.out.println("???");
 		init();
 	}
 

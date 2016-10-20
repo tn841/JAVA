@@ -14,14 +14,14 @@ public class MessageService {
 	/*
 	 * 쪽지 서비스 구현에 필요한 DAO 객체 선언
 	 */
-	private MessageDao messageDao;
+	private MessageSocketDao messageDao;
 	
 
 	/*
 	 * MessageService 생성자 - Dao객체 생성
 	 */
 	public MessageService() throws Exception {
-		messageDao = new MessageDao();
+		messageDao = new MessageSocketDao();
 
 	}
 
