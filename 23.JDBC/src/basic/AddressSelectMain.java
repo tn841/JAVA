@@ -16,7 +16,7 @@ public class AddressSelectMain {
 		
 		try{
 			Class.forName(driverClass);
-			Connection con = DriverManager.getConnection(url, user, password);
+			Connection con = DriverManager.getConnection(url, user, password);	//Oracle의 connection은 비용이 든다.
 			Statement stmt = con.createStatement();
 			
 			
@@ -62,6 +62,10 @@ public class AddressSelectMain {
 				String address = rs.getString("address");
 				System.out.println(no+"\t"+id+"\t"+name+"\t"+phone+"\t"+address);
 			}
+			
+			rs.close();
+			stmt.close();
+			con.close();//connection을 매번 닫는것은 큰비용을 초래한다.. 
 			
 		}catch(Exception e){
 			System.out.println(e.getMessage());
