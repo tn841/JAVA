@@ -32,5 +32,9 @@ from emp
 where sal>1000 and sal<3000 and job = 'SALESMAN';
 
 
+select * from emp;
+select empno, ename, sal, job from emp where empno=7369;
+
+
 
 
