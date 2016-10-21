@@ -43,4 +43,6 @@ START WITH 1;
  NOORDER  
  NOCYCLE ;
 
-
+desc address;
+select * from address
+order by no;
