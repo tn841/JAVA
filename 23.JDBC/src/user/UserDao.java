@@ -48,7 +48,7 @@ public class UserDao {
 		pstmt.setString(1, user.getId());
 		pstmt.setString(2, user.getPw());
 		pstmt.setString(3, user.getName());
-		pstmt.setString(4, user.getPw());
+		pstmt.setString(4, user.getEmail());
 		
 		int insertRowCount = pstmt.executeUpdate();
 		
@@ -103,13 +103,11 @@ public class UserDao {
 		
 		boolean isResultSet = stmt.execute(sql);
 	
-		System.out.println(isResultSet);
 		
 		if(isResultSet){
 			ResultSet rs = stmt.getResultSet();
 			
 			while(rs.next()){
-				System.out.println(rs.getString(1));
 				userList.add(new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)));
 			}
 			rs.close();
@@ -117,10 +115,6 @@ public class UserDao {
 		
 		stmt.close();
 		con.close();
-		System.out.println("asdfasdf"+userList.size());
-		for (User user : userList) {
-			System.out.println(user.getId()+"\t"+user.getPw()+"\t"+user.getName()+"\t"+user.getEmail());
-		}
 		return userList;
 	}
 	
