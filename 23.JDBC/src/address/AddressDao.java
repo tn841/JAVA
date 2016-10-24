@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import com.itwill.jdbc.common.ConnectionFactory;
+import com.itwill.jdbc.common.ConnectionPool;
 
 /*
  DAO(Data Access Object)
@@ -54,7 +55,7 @@ public class AddressDao {
 	
 	
 	public int insert(AddressDTO addrDTO) throws Exception{
-		String sql = "insert into address values(?,?,?,?,?)";
+		String sql = "insert into address values(address_no_seq.nextval,?,?,?,?)";
 		Connection con = ConnectionFactory.getConnection();		
 		PreparedStatement pstmt = con.prepareStatement(sql);
 		/*
@@ -66,11 +67,11 @@ public class AddressDao {
 		PHONE            VARCHAR2(15) 
 		ADDRESS          VARCHAR2(60)
 		 */
-		pstmt.setInt(1, addrDTO.getNo());
-		pstmt.setString(2, addrDTO.getId());
-		pstmt.setString(3, addrDTO.getName());
-		pstmt.setString(4, addrDTO.getPhone());
-		pstmt.setString(5, addrDTO.getAddress());
+		//pstmt.setInt(1, addrDTO.getNo());
+		pstmt.setString(1, addrDTO.getId());
+		pstmt.setString(2, addrDTO.getName());
+		pstmt.setString(3, addrDTO.getPhone());
+		pstmt.setString(4, addrDTO.getAddress());
 		
 		int insertRowCount = pstmt.executeUpdate();
 		System.out.println(">> "+insertRowCount+" insert");
@@ -90,7 +91,9 @@ public class AddressDao {
 		
 		int deleteRow = pstmt.executeUpdate();
 		System.out.println(">>> delete : "+deleteRow);
+		ConnectionPool.getInstance().releaseConnection(con);
 		return deleteRow;
+		
 	}
 	
 	public int update(int no, String addr) throws Exception{
@@ -107,6 +110,7 @@ public class AddressDao {
 			updateRowCount = pstmt.getUpdateCount();
 		}
 		System.out.println(">>> update : "+updateRowCount);
+		ConnectionPool.getInstance().releaseConnection(con);
 		return updateRowCount;
 	}
 	

@@ -22,11 +22,11 @@ public class AddressDaoMain {
 		int no = 0;
 	
 	
-		AddressDTO addrDTO = new AddressDTO(99, "동해", "물과", "백두", "산이");
+		AddressDTO addrDTO = new AddressDTO(0, "동해", "물과", "백두", "산이");
 	
 		
 		//addrDao.insert(no, id,name,phone,address);
-		//addrDao.insert(addrDTO);
+		addrDao.insert(addrDTO);
 		
 		//addrDao.delete(1123);
 		
