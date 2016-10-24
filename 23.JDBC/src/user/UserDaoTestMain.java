@@ -22,9 +22,7 @@ public class UserDaoTestMain {
 		
 		int rand = 	(int)(Math.random()*10000);
 		System.out.println("\n2. insert id="+rand);
-		User user = new User("id"+rand, "1234", 
-				"user"+rand, 
-				"email||USERINFO_SEQ.CURRVAL");		
+		User user = new User("id"+rand, "1234", "user"+rand, "email||USERINFO_SEQ.CURRVAL");		
 		
 		System.out.println(">> insert : "+userDao.insert(user));
 		
