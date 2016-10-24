@@ -3,6 +3,7 @@ package dept;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DepartmentDaoImplMain {
 
@@ -38,10 +39,30 @@ public class DepartmentDaoImplMain {
 		}
 		
 		
+		System.out.println("------5.select emp_dept list");
+		
+		ArrayList<HashMap<String, Object>> empMapList =	deptDao.selectEmployees();
+		for (HashMap<String, Object> rowMap : empMapList) {
+			int empno=(int)rowMap.get("empno");
+			String ename=(String)rowMap.get("ename");
+			String job=(String)rowMap.get("job");
+			String dname=(String)rowMap.get("dname");
+			String loc2=(String)rowMap.get("loc");
+			System.out.println(empno+"\t"+ename+"\t"+job+"\t"+dname+"\t"+loc2);
+		}
+		
+		
+		
+		
 		
 		
 		deptDao.selectByNo(0);
 		deptDao.update(null);
+		
+		
+		
+		
+		
 	}
 
 }

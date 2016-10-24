@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class ConnectionFactory {
 	
 	public static Connection getConnection() throws Exception{
-		String driverClass="oracle.jdbc.driver.OracleDriver";
+		/*String driverClass="oracle.jdbc.driver.OracleDriver";
 		String url="jdbc:oracle:thin:@210.16.214.203:1521:XE";
 		String user="user21";
 		String pass="user21";
@@ -18,11 +18,15 @@ public class ConnectionFactory {
 		Class.forName(driverClass);	//1. Driver Loading
 		Connection con = DriverManager.getConnection(url, user, pass);	//2. Connection ¿¬°á
 		
-		return con;
+		return con;*/
+		
+		return ConnectionPool.getInstance().getConnection();
 	}
 	
 	public static void releaseConnection(Connection con) throws SQLException{
-		con.close();
+//		con.close();
+		ConnectionPool.getInstance().releaseConnection(con);
+		
 	}
 	
 }

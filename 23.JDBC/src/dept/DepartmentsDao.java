@@ -20,6 +20,9 @@ public interface DepartmentsDao {
 		public Department selectByNo(int deptno) throws Exception;
 		// 부서 전체목록 반환
 		public ArrayList<Department> selectByAll() throws Exception;
+		// 사원정보에 따른 전체목록 반환
+		public ArrayList selectEmployees() throws Exception;
+		
 }
 
 
